@@ -1,0 +1,15 @@
+# ignore files without extensions
+*
+!*.*
+!*/
+
+# build files
+*.d
+*.o
+
+# temporary files
+*.sw*
+
+# build directories
+bin/
+build/
