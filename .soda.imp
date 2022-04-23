@@ -1,0 +1,9 @@
+[
+    { symbol: ["NULL", private, "<stddef.h>", public] },
+
+    { include: ["@<.*_types.*>", private, "<sys/types.h>", public] },
+    { include: ["@<sys/_pthread/.*>", private, "<pthread.h>", public] },
+    { include: ["@\".*/CGAFfineTransform.h\"", private, "<CoreGraphics/CGAFfineTransform.h>", public] },
+    { include: ["@\".*/CGContext.h\"", private, "<CoreGraphics/CGContext.h>", public] },
+    { include: ["@\".*/CGGeometry.h\"", private, "<CoreGraphics/CGGeometry.h>", public] },
+]
