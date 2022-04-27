@@ -7,7 +7,10 @@
 #include <CoreFoundation/CFString.h>
 #include <CoreGraphics/CGBase.h>
 #include <CoreGraphics/CGGeometry.h>
+#include <CoreGraphics/CGPath.h>
 #include <CoreText/CTFontDescriptor.h>
+#include <CoreText/CTFrame.h>
+#include <CoreText/CTFramesetter.h>
 #include <CoreText/CTLine.h>
 #include <CoreText/CTStringAttributes.h>
 
@@ -101,4 +104,48 @@ void render_line(CGContextRef context, CTFontRef font, const char* text,
     CFRelease(attrs);
     CFRelease(string);
     CFRelease(dict);
+}
+
+void render_frame(CGContextRef context, CTFontRef font, const char* text,
+                  uint32_t n, int32_t* x, int32_t* y,
+                  CGAffineTransform* transform) {
+    int32_t i;
+
+    if (n < 1 || n > 7)
+        return;
+
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGPathMoveToPoint(path, transform, x[0], y[0]);
+    for (i = 1; i < n; ++i)
+        CGPathAddLineToPoint(path, transform, x[i], y[i]);
+
+    const void* keys[] = {
+        kCTFontAttributeName,
+        kCTForegroundColorFromContextAttributeName
+    };
+
+    const void* values[] = {
+        font,
+        kCFBooleanTrue
+    };
+
+    CFDictionaryRef dict = CFDictionaryCreate(NULL, keys, values,
+        (sizeof(keys) / sizeof(keys[0])), &kCFTypeDictionaryKeyCallBacks,
+        &kCFTypeDictionaryValueCallBacks);
+    CFStringRef string = CFStringCreateWithCString(NULL, text,
+        kCFStringEncodingUTF8);
+    CFAttributedStringRef attrs = CFAttributedStringCreate(NULL, string, dict);
+
+    CTFramesetterRef setter = CTFramesetterCreateWithAttributedString(attrs);
+    CTFrameRef frame = CTFramesetterCreateFrame(setter, CFRangeMake(0, 0),
+        path, NULL);
+
+    CTFrameDraw(frame, context);
+
+    CFRelease(frame);
+    CFRelease(setter);
+    CFRelease(attrs);
+    CFRelease(string);
+    CFRelease(dict);
+    CFRelease(path);
 }

@@ -35,8 +35,8 @@ void* module_loop(void* data) {
     context = win->context;
 
     while (w->flag) {
-        update_module(&soda->modules[DATE]);
-        update_module(&soda->modules[INFO]);
+        update_module(&soda->modules[DATE], NULL);
+        update_module(&soda->modules[INFO], NULL);
 
         SLSDisableUpdate(soda->cid);
         SLSOrderWindow(soda->cid, win->id, 0, 0);
@@ -45,6 +45,7 @@ void* module_loop(void* data) {
 
         render_module(&soda->modules[DATE], context, 40, 800);
         render_module(&soda->modules[INFO], context, 40, 80);
+        render_module(&soda->modules[NOTE], context, 40, 600);
 
         CGContextFlush(context);
 
